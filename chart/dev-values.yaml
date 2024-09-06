@@ -1,0 +1,22 @@
+catalog:
+  tag: "a41db7"
+orders_db:
+  tag: "73e2b2"
+catalog_db:
+  tag: "a41db7"
+cart:
+  tag: "b6c148"
+cart_dynamodb:
+  tag: "b6c148"
+orders:
+  tag: "73e2b2"
+orders_db_rabbitmq:
+  tag: "73e2b2"
+checkout:
+  tag: "1b00c5"
+checkout_db:
+  tag: "1b00c5"
+assets:
+  tag: "586462"
+ui:
+  tag: "a068ac"

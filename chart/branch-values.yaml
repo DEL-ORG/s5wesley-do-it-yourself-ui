@@ -1,0 +1,22 @@
+catalog:
+  tag: "8"
+orders_db:
+  tag: "8"
+catalog_db:
+  tag: "8"
+cart:
+  tag: "8"
+cart_dynamodb:
+  tag: "8"
+orders:
+  tag: "8"
+orders_db_rabbitmq:
+  tag: "8"
+checkout:
+  tag: "8"
+checkout_db:
+  tag: "8"
+assets:
+  tag: "8"
+ui:
+  tag: "8"
