@@ -53,7 +53,7 @@ pipeline {
             steps {
                 sh '''
                     cd ${WORKSPACE}/ui
-                    docker build -t devopseasylearning/s7rosine-ui:${BUILD_NUMBER} .
+                    docker build -t devopseasylearning/s5wesley-do-it-yourself-ui:${BUILD_NUMBER} .
                 '''
             }
         }
@@ -65,7 +65,7 @@ pipeline {
             steps {
                 sh '''
                     id
-                    docker push devopseasylearning/s7rosine-ui:${BUILD_NUMBER}
+                    docker push devopseasylearning/s5wesley-do-it-yourself-ui:${BUILD_NUMBER}
                 '''
             }
         }
@@ -80,9 +80,9 @@ pipeline {
             steps {
                 sh '''
                     TAG=${BUILD_NUMBER}
-                    rm -rf s7rosine-automation || true
-                    git clone git@github.com:DEL-ORG/s7rosine-automation.git 
-                    cd s7rosine-automation/chart
+                    rm -rf s5wesley-do-it-yourself-automation || true
+                    git clone git@github.com:DEL-ORG/s5wesley-do-it-yourself-automation.git 
+                    cd s5wesley-do-it-yourself-automation/chart
                     yq eval '.ui.tag = "'"$TAG"'"' -i dev-values.yaml
                     git config --global user.name "rosinebel"
                     git config --global user.email rosinemuku@yahoo.com 
@@ -100,7 +100,7 @@ pipeline {
             slackSend (
                 channel: '#development-alerts',
                 color: 'good',
-                message: "SUCCESSFUL: Application s7rosine-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+                message: "SUCCESSFUL: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
             )
         }
 
@@ -108,7 +108,7 @@ pipeline {
             slackSend (
                 channel: '#development-alerts',
                 color: 'warning',
-                message: "UNSTABLE: Application s7rosine-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+                message: "UNSTABLE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
             )
         }
 
@@ -116,7 +116,7 @@ pipeline {
             slackSend (
                 channel: '#development-alerts',
                 color: '#FF0000',
-                message: "FAILURE: Application s7rosine-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+                message: "FAILURE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
             )
         }
 
