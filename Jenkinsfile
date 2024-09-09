@@ -7,6 +7,15 @@ pipeline {
 
     stages {
 
+        stage('checkout') {
+            steps {
+                // Checkout the code from the Git repository
+                git branch: 'main', 
+                    credentialsId: 'github-ssh', 
+                    url: 'git@github.com:DEL-ORG/s5wesley-do-it-yourself-ui.git'
+            }
+        }
+
         stage('unit test') {
             agent {
                 docker { 
@@ -70,58 +79,58 @@ pipeline {
             }
         }
 
-        stage('Trigger Deployment') {
-            agent { 
-                label 'deploy' 
-            }
-            when {
-                expression { env.GIT_BRANCH == 'origin/main' }
-            }
-            steps {
-                sh '''
-                    TAG=${BUILD_NUMBER}
-                    rm -rf s5wesley-do-it-yourself-automation || true
-                    git clone git@github.com:DEL-ORG/s5wesley-do-it-yourself-automation.git 
-                    cd s5wesley-do-it-yourself-automation/chart
-                    yq eval '.ui.tag = "'"$TAG"'"' -i dev-values.yaml
-                    git config --global user.name "rosinebel"
-                    git config --global user.email rosinemuku@yahoo.com 
-                    git status
-                    git add -A
-                    git commit -m "Updating ui tag to $TAG"
-                    git push origin main
-                '''
-            }
-        }
+        // stage('Trigger Deployment') {
+        //     agent { 
+        //         label 'deploy' 
+        //     }
+        //     when {
+        //         expression { env.GIT_BRANCH == 'origin/main' }
+        //     }
+        //     steps {
+        //         sh '''
+        //             TAG=${BUILD_NUMBER}
+        //             rm -rf s5wesley-do-it-yourself-automation || true
+        //             git clone git@github.com:DEL-ORG/s5wesley-do-it-yourself-automation.git 
+        //             cd s5wesley-do-it-yourself-automation/chart
+        //             yq eval '.ui.tag = "'"$TAG"'"' -i dev-values.yaml
+        //             git config --global user.name "rosinebel"
+        //             git config --global user.email rosinemuku@yahoo.com 
+        //             git status
+        //             git add -A
+        //             git commit -m "Updating ui tag to $TAG"
+        //             git push origin main
+        //         '''
+        //     }
+        // }
     }
 
-    post {
-        success {
-            slackSend (
-                channel: '#development-alerts',
-                color: 'good',
-                message: "SUCCESSFUL: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-            )
-        }
+    // post {
+    //     success {
+    //         slackSend (
+    //             channel: '#development-alerts',
+    //             color: 'good',
+    //             message: "SUCCESSFUL: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+    //         )
+    //     }
 
-        unstable {
-            slackSend (
-                channel: '#development-alerts',
-                color: 'warning',
-                message: "UNSTABLE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-            )
-        }
+    //     unstable {
+    //         slackSend (
+    //             channel: '#development-alerts',
+    //             color: 'warning',
+    //             message: "UNSTABLE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+    //         )
+    //     }
 
-        failure {
-            slackSend (
-                channel: '#development-alerts',
-                color: '#FF0000',
-                message: "FAILURE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-            )
-        }
+    //     failure {
+    //         slackSend (
+    //             channel: '#development-alerts',
+    //             color: '#FF0000',
+    //             message: "FAILURE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+    //         )
+    //     }
 
-        cleanup {
-            deleteDir()
-        }
-    }
+    //     cleanup {
+    //         deleteDir()
+    //     }
+    // }
 }
