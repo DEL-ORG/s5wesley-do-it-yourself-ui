@@ -68,7 +68,8 @@ pipeline {
 
         stage('Push ui-image') {
             when {
-                branch 'main'
+                expression {
+                    env.GIT_BRANCH == 'origin/main'
             }
             steps {
                 sh '''
