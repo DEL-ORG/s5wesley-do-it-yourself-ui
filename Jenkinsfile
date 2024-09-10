@@ -66,10 +66,18 @@ pipeline {
             }
         }
 
+        stage('Show Public IP') {
+            steps {
+                // Fetch and display the public IP address
+                sh 'curl ifconfig.io'
+            }
+        }
+
         stage('Push ui-image') {
             when {
                 expression {
                     env.GIT_BRANCH == 'origin/main'
+                }
             }
             steps {
                 sh '''
@@ -94,8 +102,8 @@ pipeline {
         //             git clone git@github.com:DEL-ORG/s5wesley-do-it-yourself-automation.git 
         //             cd s5wesley-do-it-yourself-automation/chart
         //             yq eval '.ui.tag = "'"$TAG"'"' -i dev-values.yaml
-        //             git config --global user.name "rosinebel"
-        //             git config --global user.email rosinemuku@yahoo.com 
+        //             git config --global user.name "s5wesley"
+        //             git config --global user.email wesleymbarga@gmail.com 
         //             git status
         //             git add -A
         //             git commit -m "Updating ui tag to $TAG"
@@ -131,8 +139,8 @@ pipeline {
     //         )
     //     }
 
-    //     cleanup {
-    //         deleteDir()
-    //     }
+        cleanup {
+            deleteDir()
+        }
     // }
 }
