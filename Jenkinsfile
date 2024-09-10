@@ -22,7 +22,6 @@ pipeline {
                     image 'maven:3.8.5-openjdk-18' 
                     args '-u root' 
                 }
-
             }
             steps {
                 sh '''
@@ -53,7 +52,7 @@ pipeline {
         stage('Docker Login') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'del-docker-hub-auth', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
-                    // Docker login steps would go here
+                    sh 'docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW'
                 }
             }
         }
@@ -69,7 +68,7 @@ pipeline {
 
         stage('Push ui-image') {
             when {
-                expression { env.GIT_BRANCH == 'origin/main' }
+                branch 'main'
             }
             steps {
                 sh '''
@@ -79,12 +78,13 @@ pipeline {
             }
         }
 
+        // Optional deployment stage
         // stage('Trigger Deployment') {
         //     agent { 
         //         label 'deploy' 
         //     }
         //     when {
-        //         expression { env.GIT_BRANCH == 'origin/main' }
+        //         branch 'main'
         //     }
         //     steps {
         //         sh '''
@@ -104,6 +104,7 @@ pipeline {
         // }
     }
 
+    // Post build actions (slack notifications, cleanup)
     // post {
     //     success {
     //         slackSend (
