@@ -111,36 +111,36 @@ pipeline {
         //         '''
         //     }
         // }
+
     }
 
-    // Post build actions (slack notifications, cleanup)
-    // post {
-    //     success {
-    //         slackSend (
-    //             channel: '#development-alerts',
-    //             color: 'good',
-    //             message: "SUCCESSFUL: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-    //         )
-    //     }
-
-    //     unstable {
-    //         slackSend (
-    //             channel: '#development-alerts',
-    //             color: 'warning',
-    //             message: "UNSTABLE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-    //         )
-    //     }
-
-    //     failure {
-    //         slackSend (
-    //             channel: '#development-alerts',
-    //             color: '#FF0000',
-    //             message: "FAILURE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-    //         )
-    //     }
-
-        cleanup {
-            deleteDir()
+    post {
+        always {
+            deleteDir() // Cleanup the workspace after the build completes
         }
-    // }
+
+        success {
+            slackSend (
+                channel: '#development-alerts',
+                color: 'good',
+                message: "SUCCESSFUL: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+            )
+        }
+
+        unstable {
+            slackSend (
+                channel: '#development-alerts',
+                color: 'warning',
+                message: "UNSTABLE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+            )
+        }
+
+        failure {
+            slackSend (
+                channel: '#development-alerts',
+                color: '#FF0000',
+                message: "FAILURE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+            )
+        }
+    }
 }
