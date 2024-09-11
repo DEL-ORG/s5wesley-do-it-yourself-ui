@@ -8,7 +8,6 @@ pipeline {
     stages {
         stage('checkout') {
             steps {
-                // Checkout the code from the Git repository
                 git branch: 'main', 
                     credentialsId: 'github-ssh', 
                     url: 'git@github.com:DEL-ORG/s5wesley-do-it-yourself-ui.git'
@@ -35,7 +34,7 @@ pipeline {
             agent {
                 docker { 
                     image 'bitnami/trivy:latest' 
-                    args '--entrypoint="" -u root' // Override entrypoint
+                    args '--entrypoint="" -u root'
                 }
             } 
 
@@ -81,44 +80,30 @@ pipeline {
             }
         }
 
-        stage('Show Public IP') {
+        stage('Push ui-image') {
             steps {
-                // Fetch and display the public IP address
-                sh 'curl ifconfig.io'
+                sh '''
+                    docker push devopseasylearning/s5wesley-do-it-yourself-ui:${BUILD_NUMBER}
+                '''
             }
         }
 
         stage('Docker Image Scan') {
-           agent {
-                docker { 
-                    image 'bitnami/trivy:latest' 
-                    args '--entrypoint="" -u root' // Override entrypoint
-                }
-            }
-
             steps {
                 sh 'trivy image --format table -o trivy-image-report.html devopseasylearning/s5wesley-do-it-yourself-ui:${BUILD_NUMBER}'
             }
         }
 
-        stage('Push ui-image') {
-            when {
-                expression {
-                    env.GIT_BRANCH == 'origin/main'
-                }
-            }
+        stage('Show Public IP') {
             steps {
-                sh '''
-                    id
-                    docker push devopseasylearning/s5wesley-do-it-yourself-ui:${BUILD_NUMBER}
-                '''
+                sh 'curl ifconfig.io'
             }
         }
     }
 
     post {
         always {
-            deleteDir() // Cleanup the workspace after the build completes
+            deleteDir()
         }
 
         success {
