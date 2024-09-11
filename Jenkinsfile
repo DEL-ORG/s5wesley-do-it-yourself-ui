@@ -35,12 +35,12 @@ pipeline {
             agent {
                 docker { 
                     image 'bitnami/trivy:latest' 
-                    args '-u root' 
+                    args '--entrypoint="" -u root' // Override entrypoint
                 }
             } 
 
             steps {
-                sh  ''' 
+                sh ''' 
                    cd ui
                    trivy fs --format table -o trivy-fs-report.html .
                    '''
