@@ -30,6 +30,10 @@ pipeline {
                 ls
                 '''
             }
+        stage('File System Scan') {
+            steps {
+                sh 'trivy fs --format table -o trivy-fs-report.html .'
+            }
         }
 
         stage('SonarQube analysis') {
@@ -72,6 +76,11 @@ pipeline {
                 sh 'curl ifconfig.io'
             }
         }
+       stage('Docker Image Scan') {
+            steps {
+                sh 'trivy image --format table -o trivy-image-report.html devopseasylearning/s5wesley-do-it-yourself-ui:${BUILD_NUMBER}'
+            }
+        } 
 
         stage('Push ui-image') {
             when {
