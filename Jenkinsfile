@@ -24,6 +24,7 @@ pipeline {
                     args '-u root' 
                 }
             }
+        }
             steps {
                 sh '''
                 cd ui
