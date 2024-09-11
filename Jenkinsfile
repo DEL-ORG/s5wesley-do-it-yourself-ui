@@ -32,6 +32,13 @@ pipeline {
         }
 
         stage('File System Scan') {
+            agent {
+                docker { 
+                    image 'bitnami/trivy:latest' 
+                    args '-u root' 
+                }
+            } 
+
             steps {
                 sh  ''' 
                    cd ui
