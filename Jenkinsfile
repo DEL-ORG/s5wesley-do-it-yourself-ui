@@ -5,7 +5,8 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('del-docker-hub-auth')
     }
 
-    stages {
+    stages 
+    {
 
         stage('checkout') {
             steps {
@@ -152,4 +153,5 @@ pipeline {
             )
         }
     }
+  }
 }
