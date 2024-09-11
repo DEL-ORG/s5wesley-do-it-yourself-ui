@@ -5,9 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('del-docker-hub-auth')
     }
 
-    stages 
-    {
-
+    stages {
         stage('checkout') {
             steps {
                 // Checkout the code from the Git repository
@@ -24,7 +22,6 @@ pipeline {
                     args '-u root' 
                 }
             }
-        }
             steps {
                 sh '''
                 cd ui
@@ -32,6 +29,8 @@ pipeline {
                 ls
                 '''
             }
+        }
+
         stage('File System Scan') {
             steps {
                 sh 'trivy fs --format table -o trivy-fs-report.html .'
@@ -78,11 +77,12 @@ pipeline {
                 sh 'curl ifconfig.io'
             }
         }
-       stage('Docker Image Scan') {
+
+        stage('Docker Image Scan') {
             steps {
                 sh 'trivy image --format table -o trivy-image-report.html devopseasylearning/s5wesley-do-it-yourself-ui:${BUILD_NUMBER}'
             }
-        } 
+        }
 
         stage('Push ui-image') {
             when {
@@ -97,32 +97,6 @@ pipeline {
                 '''
             }
         }
-
-        // Optional deployment stage
-        // stage('Trigger Deployment') {
-        //     agent { 
-        //         label 'deploy' 
-        //     }
-        //     when {
-        //         branch 'main'
-        //     }
-        //     steps {
-        //         sh '''
-        //             TAG=${BUILD_NUMBER}
-        //             rm -rf s5wesley-do-it-yourself-automation || true
-        //             git clone git@github.com:DEL-ORG/s5wesley-do-it-yourself-automation.git 
-        //             cd s5wesley-do-it-yourself-automation/chart
-        //             yq eval '.ui.tag = "'"$TAG"'"' -i dev-values.yaml
-        //             git config --global user.name "s5wesley"
-        //             git config --global user.email wesleymbarga@gmail.com 
-        //             git status
-        //             git add -A
-        //             git commit -m "Updating ui tag to $TAG"
-        //             git push origin main
-        //         '''
-        //     }
-        // }
-
     }
 
     post {
@@ -154,5 +128,4 @@ pipeline {
             )
         }
     }
-  }
-
+}
