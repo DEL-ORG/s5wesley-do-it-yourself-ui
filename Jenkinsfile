@@ -89,6 +89,13 @@ pipeline {
         }
 
         stage('Docker Image Scan') {
+           agent {
+                docker { 
+                    image 'bitnami/trivy:latest' 
+                    args '--entrypoint="" -u root' // Override entrypoint
+                }
+            }
+
             steps {
                 sh 'trivy image --format table -o trivy-image-report.html devopseasylearning/s5wesley-do-it-yourself-ui:${BUILD_NUMBER}'
             }
