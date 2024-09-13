@@ -106,6 +106,38 @@ pipeline {
                 sh 'curl ifconfig.io'
             }
         }
+        stage('trigger-deployment') {
+            agent { 
+                label 'deploy' 
+            }
+            when { 
+                expression { 
+                    env.BRANCH_NAME == 'main' 
+                }
+            }
+            steps {
+                sh '''
+                    set -e
+                    TAG=${BUILD_NUMBER}
+                    rm -rf s5wesley-do-it-yourself-automation || true
+                    git clone git@github.com:DEL-ORG/s5wesley-do-it-yourself-automation.git 
+                    cd s5wesley-do-it-yourself-automation/chart
+                    yq eval '.ui.tag = "'"$TAG"'"' -i dev-values.yaml
+                    git config --global user.name "devopseasylearning"
+                    git config --global user.email info@devopseasylearning.com
+                    
+                    git add -A
+                    if git diff-index --quiet HEAD; then
+                        echo "No changes to commit"
+                    else
+                        git commit -m "updating Checkout to ${TAG}"
+                        git push origin main
+                    fi
+                '''
+            }
+        }
+    }
+
     }
 
     post {
