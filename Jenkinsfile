@@ -110,11 +110,6 @@ pipeline {
             agent { 
                label 'deploy' 
        }
-             when { 
-                expression {
-                   return sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim() == 'main'
-             }
-       }
             steps {
                  sh '''
                     TAG=${BUILD_NUMBER}
@@ -129,7 +124,7 @@ pipeline {
                     if git diff-index --quiet HEAD; then
                        echo "No changes to commit"
                    else
-                      git commit -m "updating Checkout to ${TAG}"
+                      git commit -m "updating ui to ${TAG}"
                       git push origin main
                    fi
               ''' 
