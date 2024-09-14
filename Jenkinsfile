@@ -135,32 +135,35 @@ pipeline {
 
 
     post {
-        always {
-            deleteDir()
-        }
-
         success {
-            slackSend (
-                channel: '#development-alerts',
-                color: 'good',
-                message: "SUCCESSFUL: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-            )
+            script {
+                def channels = ['#devops-team', '#sessions5-november-2022', '#group1-s5']
+                for (channel in channels) {
+                    slackSend(channel: channel, color: 'good', message: "SUCCESSFUL: Application s5wesley-do-it-yourself-Cart Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+                }
+            }
         }
 
         unstable {
-            slackSend (
-                channel: '#development-alerts',
-                color: 'warning',
-                message: "UNSTABLE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-            )
+            script {
+                def channels = ['#devops-team', '#sessions5-november-2022', '#group1-s5']
+                for (channel in channels) {
+                    slackSend(channel: channel, color: 'warning', message: "UNSTABLE: Application s5wesley-do-it-yourself-Cart Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+                }
+            }
         }
 
         failure {
-            slackSend (
-                channel: '#development-alerts',
-                color: '#FF0000',
-                message: "FAILURE: Application s5wesley-do-it-yourself-ui Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-            )
+            script {
+                def channels = ['#devops-team', '#sessions5-november-2022', '#group1-s5']
+                for (channel in channels) {
+                    slackSend(channel: channel, color: '#FF0000', message: "FAILURE: Application s5wesley-do-it-yourself-Cart Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+                }
+            }
+        }
+
+        cleanup {
+            deleteDir()
         }
     }
 }
